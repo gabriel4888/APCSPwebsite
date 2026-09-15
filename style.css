@@ -1,0 +1,139 @@
+footer{
+    background-color:#29a347;
+}
+.myNav{
+    background-color:#11abf2;
+    color:yellow;
+}
+.parallax {
+  /* The image used */
+  background-image: url("https://codehs.com/uploads/10ee09f02a0843ce3afab3d98979b3da");
+
+  /* Set a specific height */
+  min-height: 500px;
+
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment:scroll;
+}
+body{
+    background-color:lightblue;
+}
+
+
+
+.ghs{
+    background-color:black;
+    color:gold;
+}
+.fish1{
+    max-width: 25%;
+    height: auto;
+}
+.fish2{
+    max-width: 25%;
+    height: auto;
+}
+.fish3{
+    max-width: 25%;
+    height: auto;
+}
+.hike1{
+    max-width: 25%;
+    height: auto;
+}
+.hike2{
+    max-width: 30%;
+    height: auto;
+
+}
+.hike3{
+    max-width: 25%;
+    height: auto;
+}
+.basketball1{
+    max-width: 30%;
+    height: auto;
+}
+.basketball2{
+    max-width: 30%;
+    height: auto;
+}
+#hello{
+    background-color: transparent;
+    color:green;
+}
+@media screen and (max-width: 860px) {
+  body {
+    background-color: lightgreen;
+  }
+}
+
+
+
+.Btn {
+  width: 140px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border: none;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.089);
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.leftContainer {
+  width: 60%;
+  height: 100%;
+  background-color: #0060ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.leftContainer .like {
+  color: white;
+  font-weight: 600;
+}
+
+.likeCount {
+  width: 40%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0060ff;
+  font-weight: 600;
+  position: relative;
+  background-color: white;
+}
+
+.likeCount::before {
+  height: 8px;
+  width: 8px;
+  position: absolute;
+  content: "";
+  background-color: rgb(255, 255, 255);
+  transform: rotate(45deg);
+  left: -4px;
+}
+
+.Btn:hover .leftContainer {
+  background-color: #1d4292;
+}
+
+.Btn:active .leftContainer {
+  background-color: #072b7a;
+}
+
+.Btn:active .leftContainer svg {
+  transform: scale(1.15);
+  transform-origin: top;
+}
