@@ -1,17 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
-    <!-- Link your custom CSS stylesheet -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Hello World!!!!</h1>
-    <!-- Your visible website content goes here -->
+<html>
+    <head>
+      <title>Bootstrap Example</title>
+      <link rel="icon" type="image/x-icon" href="https://codehs.com/uploads/3d272217e413602b27cfdfaeef8db94c">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <link rel="stylesheet" href="style.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <nav class="myNav navbar">
+          <div class="container-fluid">
+            <div class="pt-3 mt-5 navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="index.html">APCSP Website</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="index.html">Home</a></li>
+                <li><a href="Bio.html">Bio</a></li>
+                <li><a href="project1.html">Project 1</a></li>
+                <li><a href="project2.html">Project 2</a></li>
+                <li><a href="project3.html">Project 3</a></li>
+                <li><a href="project4.html">Project 4</a></li>
+                <li><a href="project5.html">Project 5</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <div class="parallax"></div>
+        <h1 id="hello" class="text-center">hello</h1>
+        <div class="parallax"></div>
+        <html lang="en">
 
-    <!-- Link your custom JavaScript file -->
-    <script src="main.js"></script>
-</body>
+-
+    <h1>Where Im From</h1>
+    <h3>Livermore CA</h3>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d50522.731282157576!2d-121.8136895095645!3d37.6804447145886!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fe586385a2071%3A0x98d32231cb6bd871!2sLivermore%2C%20CA!5e0!3m2!1sen!2sus!4v1789405552185!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+
+    </body>
+    <footer>
+      <h5>Created by Gabriel Abboud: 2026</h5>
+      <a class="ghs" href="https://granadahigh.livermoreschools.org/">Granada High School</a>
+      <p>Have questions? <a href="mailto:fishabboud@gmail.com">Email Us</a></p>
+      <button type="button" onclick="myButtonAction()">Back to Home</button>
+      <script>
+        function myButtonAction() {
+            window.location.href = "index.html";
+        }
+      </script>
+    </footer>
 </html>
