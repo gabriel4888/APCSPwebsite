@@ -1,0 +1,230 @@
+<html>
+    <head>
+      <title>Bootstrap Example</title>
+       <link rel="icon" type="image/x-icon" href="https://codehs.com/uploads/3d272217e413602b27cfdfaeef8db94c">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <link rel="stylesheet" href="style.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <nav class="myNav navbar">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="index.html">APCSP Website</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav">
+                <li class="active"><a class="zoom-element" href="index.html">Home</a></li>
+                <li><a class="zoom-element" href="Bio.html">Bio</a></li>
+                <li><a class="zoom-element" href="project1.html">Project 1</a></li>
+                <li><a class="zoom-element" href="project2.html">Project 2</a></li>
+                <li><a class="zoom-element" href="project3.html">Project 3</a></li>
+                <li><a class="zoom-element" href="project4.html">Project 4</a></li>
+                <li><a class="zoom-element" href="project5.html">Project 5</a></li>
+                <li><a class="zoom-element here" href="flappy.html">Flappy Bird</a></li>
+                <li><a class="zoom-element" href="Geo.html">Geometry Dash</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+            <!-- ==================== FLAPPY BIRD GAME START ==================== -->
+        <!-- Link to your external stylesheet (Put this in your main head tag, or leave it here) -->
+        <link rel="stylesheet" href="style.css">
+        
+        <div id="fb-gameBodyWrapper">
+            <div id="fb-gameContainer">
+                <div id="fb-scoreDisplay">0</div>
+                <div id="fb-bird"></div>
+                <div id="fb-screenMessage">
+                    <h1>Flappy Bird</h1>
+                    <p>Press Space or Click to Start</p>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // Wrapped in an IIFE to strictly isolate all variables from your website's main scope
+            (function() {
+                const gameContainer = document.getElementById('fb-gameContainer');
+                const bird = document.getElementById('fb-bird');
+                const scoreDisplay = document.getElementById('fb-scoreDisplay');
+                const screenMessage = document.getElementById('fb-screenMessage');
+        
+                // Game State Variables
+                let birdTop = 250;
+                let gravity = 0.25;
+                let velocity = 0;
+                let jumpForce = -5.5;
+                let score = 0;
+                let gameSpeed = 2.5;
+                let gameInterval;
+                let pipeInterval;
+                let isGameOver = false;
+                let isGameStarted = false;
+                let pipes = [];
+        
+                // Global Event Controls
+                document.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                        e.preventDefault(); // Safely prevents the spacebar from scrolling your website
+                        handleAction();
+                    }
+                });
+        
+                gameContainer.addEventListener('touchstart', (e) => {
+                    e.preventDefault(); 
+                    handleAction();
+                });
+        
+                gameContainer.addEventListener('mousedown', () => {
+                    handleAction();
+                });
+        
+                function handleAction() {
+                    if (!isGameStarted && !isGameOver) {
+                        startGame();
+                    } else if (isGameOver) {
+                        resetGame();
+                    } else {
+                        velocity = jumpForce;
+                        bird.style.transform = "rotate(-20deg)";
+                    }
+                }
+        
+                function startGame() {
+                    isGameStarted = true;
+                    screenMessage.style.display = 'none';
+                    gameInterval = setInterval(updateGame, 1000 / 60); 
+                    pipeInterval = setInterval(spawnPipes, 1500); 
+                }
+        
+                function spawnPipes() {
+                    if (isGameOver) return;
+        
+                    const gap = 130; 
+                    const minHeight = 50;
+                    const maxHeight = 600 - gap - minHeight;
+                    const topPipeHeight = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+                    const bottomPipeHeight = 600 - gap - topPipeHeight;
+        
+                    const topPipe = document.createElement('div');
+                    topPipe.classList.add('fb-pipe', 'fb-pipe-top');
+                    topPipe.style.height = `${topPipeHeight}px`;
+                    topPipe.style.top = '0px';
+                    topPipe.style.left = '400px';
+                    gameContainer.appendChild(topPipe);
+        
+                    const bottomPipe = document.createElement('div');
+                    bottomPipe.classList.add('fb-pipe', 'fb-pipe-bottom');
+                    bottomPipe.style.height = `${bottomPipeHeight}px`;
+                    bottomPipe.style.bottom = '0px';
+                    bottomPipe.style.left = '400px';
+                    gameContainer.appendChild(bottomPipe);
+        
+                    pipes.push({
+                        topElement: topPipe,
+                        bottomElement: bottomPipe,
+                        left: 400,
+                        passed: false
+                    });
+                }
+        
+                function updateGame() {
+                    velocity += gravity;
+                    birdTop += velocity;
+                    bird.style.top = `${birdTop}px`;
+        
+                    if (velocity > 3) {
+                        bird.style.transform = "rotate(45deg)";
+                    }
+        
+                    if (birdTop <= 0 || birdTop >= 576) { 
+                        gameOver();
+                        return;
+                    }
+        
+                    for (let i = pipes.length - 1; i >= 0; i--) {
+                        let p = pipes[i];
+                        p.left -= gameSpeed;
+                        p.topElement.style.left = `${p.left}px`;
+                        p.bottomElement.style.left = `${p.left}px`;
+        
+                        if (!p.passed && p.left < 50) { 
+                            p.passed = true;
+                            score++;
+                            scoreDisplay.innerText = score;
+                            if (score % 5 === 0) gameSpeed += 0.2;
+                        }
+        
+                        if (p.left < 84 && p.left > -10) { 
+                            const birdRect = bird.getBoundingClientRect();
+                            const topRect = p.topElement.getBoundingClientRect();
+                            const bottomRect = p.bottomElement.getBoundingClientRect();
+        
+                            if (birdRect.top < topRect.bottom || birdRect.bottom > bottomRect.top) {
+                                gameOver();
+                                return;
+                            }
+                        }
+        
+                        if (p.left < -60) {
+                            p.topElement.remove();
+                            p.bottomElement.remove();
+                            pipes.splice(i, 1);
+                        }
+                    }
+                }
+        
+                function gameOver() {
+                    isGameOver = true;
+                    clearInterval(gameInterval);
+                    clearInterval(pipeInterval);
+                    screenMessage.innerHTML = `<h1>Game Over</h1><p>Score: ${score}</p><p style="margin-top:10px; font-size:14px;">Click / Space to Restart</p>`;
+                    screenMessage.style.display = 'block';
+                }
+        
+                function resetGame() {
+                    pipes.forEach(p => {
+                        p.topElement.remove();
+                        p.bottomElement.remove();
+                    });
+                    
+                    pipes = [];
+                    birdTop = 250;
+                    velocity = 0;
+                    score = 0;
+                    gameSpeed = 2.5;
+                    scoreDisplay.innerText = '0';
+                    isGameOver = false;
+                    isGameStarted = false;
+                    
+                    bird.style.top = `${birdTop}px`;
+                    bird.style.transform = "rotate(0deg)";
+                    screenMessage.innerHTML = `<h1>Flappy Bird</h1><p>Press Space or Click to Start</p>`;
+                }
+            })();
+        </script>
+        <!-- ==================== FLAPPY BIRD GAME END ==================== -->
+
+        
+    </body>
+    <footer>
+      <h5>Created by Gabriel Abboud: 2026</h5>
+      <a class="ghs" href="https://granadahigh.livermoreschools.org/">Granada High School</a>
+      <p>Have questions? <a href="mailto:fishabboud@gmail.com">Email Us</a></p>
+      <button type="button" onclick="myButtonAction()">Back to Home</button>
+      <script>
+        function myButtonAction() {
+            window.location.href = "index.html";
+        }
+      </script>
+    </footer>
+</html>
