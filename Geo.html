@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>Bootstrap Example</title>
+       <link rel="icon" type="image/x-icon" href="https://codehs.com/uploads/3d272217e413602b27cfdfaeef8db94c">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <link rel="stylesheet" href="style.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <nav class="myNav navbar">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="index.html">APCSP Website</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav">
+                <li class="active"><a class="zoom-element" href="index.html">Home</a></li>
+                <li><a class="zoom-element" href="Bio.html">Bio</a></li>
+                <li><a class="zoom-element" href="project1.html">Project 1</a></li>
+                <li><a class="zoom-element" href="project2.html">Project 2</a></li>
+                <li><a class="zoom-element" href="project3.html">Project 3</a></li>
+                <li><a class="zoom-element" href="project4.html">Project 4</a></li>
+                <li><a class="zoom-element" href="project5.html">Project 5</a></li>
+                <li><a class="zoom-element" href="flappy.html">Flappy Bird</a></li>
+                <li><a class="zoom-element here" href="Geo.html">Geometry Dash</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+    
+    <!-- ==================== GEOMETRY DASH: STEREO MADNESS START ==================== -->
+<div id="gd-gameBodyWrapper">
+    <div id="gd-gameContainer">
+        <div id="gd-progressBarContainer"><div id="gd-progressBar"></div></div>
+        <div id="gd-scoreDisplay">Stereo Madness — Attempt 1</div>
+        <div id="gd-cube"></div>
+        <div id="gd-floor"></div>
+        <div id="gd-screenMessage">
+            <h1>Stereo Madness</h1>
+            <p>Press Space, Up Arrow, or Click to Play</p>
+        </div>
+    </div>
+</div>
+
+        <script>
+            (function() {
+                const gameContainer = document.getElementById('gd-gameContainer');
+                const cube = document.getElementById('gd-cube');
+                const scoreDisplay = document.getElementById('gd-scoreDisplay');
+                const screenMessage = document.getElementById('gd-screenMessage');
+                const progressBar = document.getElementById('gd-progressBar');
+        
+                // Level Map Definition
+                const levelLayout = [
+                    { type: 'spike', x: 500 },
+                    { type: 'spike', x: 800 },
+                    { type: 'spike', x: 1100 },
+                    
+                    { type: 'spike', x: 1450 },
+                    { type: 'spike', x: 1480 },
+                    
+                    { type: 'spike', x: 1800 },
+        
+                    // Step-up Platform Blocks
+                    { type: 'block', x: 2100, height: 40 },
+                    { type: 'block', x: 2130, height: 40 },
+                    { type: 'block', x: 2160, height: 40 },
+                    
+                    { type: 'block', x: 2300, height: 40 },
+                    { type: 'block', x: 2330, height: 70 },
+                    { type: 'block', x: 2360, height: 70 },
+                    
+                    { type: 'spike', x: 2550 },
+                    { type: 'spike', x: 2800 },
+        
+                    // Triple Spike
+                    { type: 'spike', x: 3100 },
+                    { type: 'spike', x: 3130 },
+                    { type: 'spike', x: 3160 },
+        
+                    // Final sprint platforms
+                    { type: 'block', x: 3450, height: 40 },
+                    { type: 'block', x: 3480, height: 70 },
+                    { type: 'block', x: 3510, height: 100 },
+                    { type: 'spike', x: 3700 }
+                ];
+        
+                const LEVEL_END_X = 4000;
+        
+                let isGameStarted = false;
+                let isGameOver = false;
+                let attempts = 1;
+                let distanceTraveled = 0;
+                
+                let cubeBottom = 40;
+                let gravity = 0.5;
+                let velocity = 0;
+                let jumpForce = 9.0;
+                let isJumping = false;
+                let rotationAngle = 0;
+        
+                let activeElements = [];
+                let gameSpeed = 4.5;
+                let gameInterval;
+        
+                document.addEventListener('keydown', (e) => {
+                    if ((e.code === 'Space' || e.code === 'ArrowUp') && 
+                        document.activeElement.tagName !== 'INPUT' && 
+                        document.activeElement.tagName !== 'TEXTAREA') {
+                        e.preventDefault(); 
+                        handleAction();
+                    }
+                });
+        
+                gameContainer.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    handleAction();
+                });
+        
+                gameContainer.addEventListener('mousedown', () => {
+                    handleAction();
+                });
+        
+                function handleAction() {
+                    if (!isGameStarted && !isGameOver) {
+                        startGame();
+                    } else if (isGameOver) {
+                        resetGame();
+                    } else if (!isJumping) {
+                        velocity = jumpForce;
+                        isJumping = true;
+                    }
+                }
+        
+                function startGame() {
+                    isGameStarted = true;
+                    screenMessage.style.display = 'none';
+                    
+                    levelLayout.forEach(item => {
+                        const el = document.createElement('div');
+                        if (item.type === 'spike') {
+                            el.classList.add('gd-spike');
+                            el.style.bottom = '40px';
+                        } else if (item.type === 'block') {
+                            el.classList.add('gd-block');
+                            el.style.bottom = `${item.height}px`;
+                        }
+                        
+                        el.style.left = `${item.x}px`;
+                        gameContainer.appendChild(el);
+                        
+                        activeElements.push({
+                            element: el,
+                            initialX: item.x,
+                            type: item.type,
+                            height: item.type === 'block' ? item.height : 30
+                        });
+                    });
+        
+                    gameInterval = setInterval(updateGame, 1000 / 60);
+                }
+        
+                function updateGame() {
+                    distanceTraveled += gameSpeed;
+        
+                    let progressPercentage = Math.min((distanceTraveled / LEVEL_END_X) * 100, 100);
+                    progressBar.style.width = `${progressPercentage}%`;
+        
+                    if (distanceTraveled >= LEVEL_END_X) {
+                        victory();
+                        return;
+                    }
+        
+                    velocity -= gravity;
+                    cubeBottom += velocity;
+                    
+                    if (isJumping) {
+                        rotationAngle += 6; 
+                        cube.style.transform = `rotate(${rotationAngle}deg)`;
+                    }
+        
+                    let currentGroundLevel = 40;
+        
+                    activeElements.forEach(item => {
+                        let currentX = item.initialX - distanceTraveled + 100;
+                        item.element.style.left = `${currentX}px`;
+        
+                        // 1. DYNAMIC GROUND CALCULATIONS (Check if center of cube is over a block)
+                        if (item.type === 'block' && currentX > 75 && currentX < 125) {
+                            let blockTopSurface = item.height + 30;
+                            // Snap cleanly to platform if falling or close to top
+                            if (cubeBottom >= blockTopSurface - 6 && velocity <= 1) {
+                                currentGroundLevel = blockTopSurface;
+                            }
+                        }
+        
+                        // 2. CRASH & COLLISION PROCESSING
+                        if (currentX > 96 && currentX < 125) {
+                            if (item.type === 'spike' && cubeBottom < 70) {
+                                gameOver();
+                            }
+                            // Head-on wall smash: Only kills you if you are strictly BELOW the block's top landing surface
+                            if (item.type === 'block' && cubeBottom < item.height + 24) {
+                                gameOver();
+                            }
+                        }
+                    });
+        
+                    if (cubeBottom <= currentGroundLevel) {
+                        cubeBottom = currentGroundLevel;
+                        velocity = 0;
+                        if (isJumping) {
+                            isJumping = false;
+                            rotationAngle = Math.round(rotationAngle / 90) * 90;
+                            cube.style.transform = `rotate(${rotationAngle}deg)`;
+                        }
+                    }
+        
+                    cube.style.bottom = `${cubeBottom}px`;
+                }
+        
+                function gameOver() {
+                    clearInterval(gameInterval);
+                    isGameOver = true;
+                    let percent = Math.floor((distanceTraveled / LEVEL_END_X) * 100);
+                    screenMessage.innerHTML = `<h1>Normal Mode: ${percent}%</h1><p style="margin-top:8px; font-size:14px;">Click / Space to start Attempt ${attempts + 1}</p>`;
+                    screenMessage.style.display = 'block';
+                }
+        
+                function victory() {
+                    clearInterval(gameInterval);
+                    isGameOver = true;
+                    screenMessage.innerHTML = `<h1>Level Complete!</h1><p>You mastered Stereo Madness!</p><p style="margin-top:8px; font-size:14px;">Click / Space to run it back</p>`;
+                    screenMessage.style.display = 'block';
+                }
+        
+                function resetGame() {
+                    activeElements.forEach(item => item.element.remove());
+                    activeElements = [];
+                    
+                    attempts++;
+                    distanceTraveled = 0;
+                    scoreDisplay.innerText = `Stereo Madness — Attempt ${attempts}`;
+                    progressBar.style.width = '0%';
+                    
+                    cubeBottom = 40;
+                    velocity = 0;
+                    isJumping = false;
+                    isGameOver = false;
+                    isGameStarted = false;
+                    rotationAngle = 0;
+                    
+                    cube.style.bottom = `${cubeBottom}px`;
+                    cube.style.transform = `rotate(0deg)`;
+                    screenMessage.innerHTML = `<h1>Stereo Madness</h1><p>Press Space, Up Arrow, or Click to Play</p>`;
+                }
+            })();
+        </script>
+        <!-- ==================== GEOMETRY DASH: STEREO MADNESS END ==================== -->
+    
+        
+    </body>
+    <footer>
+      <h5>Created by Gabriel Abboud: 2026</h5>
+      <a class="ghs" href="https://granadahigh.livermoreschools.org/">Granada High School</a>
+      <p>Have questions? <a href="mailto:fishabboud@gmail.com">Email Us</a></p>
+      <button type="button" onclick="myButtonAction()">Back to Home</button>
+      <script>
+        function myButtonAction() {
+            window.location.href = "index.html";
+        }
+      </script>
+    </footer>
+</html>
